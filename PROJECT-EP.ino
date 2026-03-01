@@ -3,47 +3,45 @@
 #include <Adafruit_SSD1306.h>
 #include <WiFi.h>
 #include <HTTPClient.h>
-
-// OLED Setup
 #define SCREEN_WIDTH 128
 #define SCREEN_HEIGHT 64
 Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, -1);
 
-// WiFi Credentials
+
 const char* ssid = "project";
 const char* password = "12345678";
 
-// ThingSpeak
+
 String apiKey = "9DEA80M3G1Y4FA46";
 const char* server = "http://api.thingspeak.com/update";
 
-// Sensor Pins
+
 #define TDS_PIN   34
 #define TURB_PIN  35
 #define PH_PIN    32
 
-// Motor Pins
+
 #define MOTOR_IN1 26
 #define MOTOR_IN2 27
 #define MOTOR_ENA 14
 
-// Thresholds
+
 const float TDS_THRESHOLD  = 3000.0;
 const float NTU_THRESHOLD  = 3000.0;
 const float PH_LOW_LIMIT   = 0.0;
 const float PH_HIGH_LIMIT  = 15.0;
 
-// PWM
+
 const int freq = 5000;
 const int resolution = 8;
 
-// Averaging
+
 const int samples = 10;
 
 void setup() {
   Serial.begin(115200);
 
-  // Keep pulldown so pin becomes 0V if sensor removed
+
   pinMode(TDS_PIN, INPUT_PULLDOWN);
   pinMode(TURB_PIN, INPUT_PULLDOWN);
   pinMode(PH_PIN, INPUT_PULLDOWN);
@@ -72,7 +70,7 @@ void setup() {
   Serial.println("\nWiFi Connected!");
 }
 
-// Averaging Function
+
 float readAverage(int pin) {
   long total = 0;
   for (int i = 0; i < samples; i++) {
@@ -93,7 +91,7 @@ void loop() {
   float avgPh = readAverage(PH_PIN);
   float vPh = (avgPh / 4095.0) * 3.3;
 
-  // ✅ Correct Sensor Disconnect Detection
+
   bool tdsMissing  = (vTds < 0.05);
   bool turbMissing = (vTurb < 0.05);
   bool phMissing   = (vPh < 0.05);
